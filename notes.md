@@ -11,7 +11,7 @@
 
 The generated `components/ui/sidebar.tsx` and `components/ui/button.tsx` imported `cn` from `@/custom-utils`, not from the default `@/lib/utils`.
 
-I repeated the same manual check with `next-app-imports`, `#custom-utils`, and the monorepo fixture. In each case, the installed sidebar continued to honor the configured utils alias.
+I repeated the same manual check with `next-app-imports`, `#custom-utils`, and the monorepo fixture. In each case, the installed sidebar correctly honored the configured utils alias.
 
 Because I could not reproduce the reported breakage on the current checkout, I added a dedicated regression test to lock this behavior down.
 
