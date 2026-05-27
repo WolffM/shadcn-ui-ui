@@ -692,9 +692,7 @@ describe("shadcn add", () => {
     tsconfig.compilerOptions.paths["@/custom-utils"] = ["./lib/utils.ts"]
     await fs.writeJson(tsconfigPath, tsconfig, { spaces: 2 })
 
-    const result = await npxShadcn(fixturePath, ["add", "sidebar", "--yes"], {
-      timeout: 300000,
-    })
+    const result = await npxShadcn(fixturePath, ["add", "sidebar", "--yes"])
 
     expectCommandSuccess(result)
 

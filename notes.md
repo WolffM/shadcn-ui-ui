@@ -1,10 +1,10 @@
 ## Steps to reproduce
-1. Ran `corepack enable && pnpm install` in `/tmp/workspace/WolffM/shadcn-ui-ui`.
+1. Ran `corepack enable && pnpm install` in the repository root.
 2. Built the CLI with `pnpm --filter=shadcn build`.
 3. Started the local registry with `pnpm --filter=v4 dev`.
-4. Copied the `next-app-init` fixture into `/tmp/shadcn-repro/next-app-init-custom-utils`.
+4. Copied the `next-app-init` fixture into a temporary working directory.
 5. Updated that fixture’s `components.json` to use `@/custom-utils` for `aliases.utils` and added a matching `@/custom-utils` path entry in `tsconfig.json`.
-6. Ran `node /tmp/workspace/WolffM/shadcn-ui-ui/packages/shadcn/dist/index.js add sidebar --yes` with `REGISTRY_URL=http://localhost:4000/r`.
+6. Ran `node packages/shadcn/dist/index.js add sidebar --yes` with `REGISTRY_URL=http://localhost:4000/r` and the repository `templates` directory configured for the CLI.
 
 ## Observed
 The generated `components/ui/sidebar.tsx` and `components/ui/button.tsx` imported `cn` from `@/custom-utils`, not from the default `@/lib/utils`. I also repeated the same kind of manual trace with `next-app-imports`, `#custom-utils`, and the monorepo fixture, and the installed sidebar continued to honor the configured utils alias in each case. Because I could not reproduce the reported breakage on the current checkout, I added a dedicated regression test to lock this behavior down.
