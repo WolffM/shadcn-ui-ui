@@ -679,6 +679,38 @@ describe("shadcn add", () => {
     expect(loginFormContent).not.toContain("@/registry/")
   })
 
+  it("should add sidebar with a custom utils alias path", async () => {
+    const fixturePath = await createFixtureTestDirectory("next-app-init")
+    const componentsJsonPath = path.join(fixturePath, "components.json")
+    const tsconfigPath = path.join(fixturePath, "tsconfig.json")
+
+    const componentsJson = await fs.readJson(componentsJsonPath)
+    componentsJson.aliases.utils = "@/custom-utils"
+    await fs.writeJson(componentsJsonPath, componentsJson, { spaces: 2 })
+
+    const tsconfig = await fs.readJson(tsconfigPath)
+    tsconfig.compilerOptions.paths["@/custom-utils"] = ["./lib/utils.ts"]
+    await fs.writeJson(tsconfigPath, tsconfig, { spaces: 2 })
+
+    const result = await npxShadcn(fixturePath, ["add", "sidebar", "--yes"])
+
+    expectCommandSuccess(result)
+
+    const sidebarPath = path.join(fixturePath, "components/ui/sidebar.tsx")
+    const buttonPath = path.join(fixturePath, "components/ui/button.tsx")
+
+    expect(await fs.pathExists(sidebarPath)).toBe(true)
+    expect(await fs.pathExists(buttonPath)).toBe(true)
+
+    const sidebarContent = await fs.readFile(sidebarPath, "utf-8")
+    const buttonContent = await fs.readFile(buttonPath, "utf-8")
+
+    expect(sidebarContent).toContain('import { cn } from "@/custom-utils"')
+    expect(sidebarContent).not.toContain('import { cn } from "@/lib/utils"')
+    expect(sidebarContent).not.toContain("@/registry/")
+    expect(buttonContent).toContain('import { cn } from "@/custom-utils"')
+  })
+
   it("should preview --dry-run for a single-package #imports project", async () => {
     const fixturePath = await createFixtureTestDirectory("next-app-imports")
 
